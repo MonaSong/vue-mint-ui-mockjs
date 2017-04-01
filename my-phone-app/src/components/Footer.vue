@@ -1,10 +1,34 @@
 <template>
   <div class="footer">
     <ul>
-      <router-link to="/home" tag="li" :class="{active:(onRoutes === 'home')}">首页</router-link>
-      <router-link to="/home/information" tag="li" :class="{active:(onRoutes === 'information')}">资讯</router-link>
-      <router-link to="/home/center" tag="li" :class="{active:(onRoutes === 'center')}">我的</router-link>
-      <router-link to="/home/money" tag="li" :class="{active:(onRoutes === 'money')}">钱包</router-link>
+      <router-link to="/home" tag="li" :class="{active:(onRoutes === 'home')}">
+        <svg class="_icon">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-home"></use>
+        </svg>
+        首页
+        
+      </router-link>
+      </router-link>
+      <router-link to="/home/information" tag="li" :class="{active:(onRoutes === 'information')}">
+        <svg class="_icon">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-info"></use>
+        </svg>
+        资讯
+        
+      </router-link>
+      <router-link to="/home/center" tag="li" :class="{active:(onRoutes === 'center')}">
+        <svg class="_icon">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-img"></use>
+        </svg>
+        我
+        
+      </router-link>
+      <router-link to="/home/money" tag="li" :class="{active:(onRoutes === 'money')}">
+        <svg class="_icon">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-money"></use>
+        </svg>
+        钱包 
+      </router-link>
     </ul>
   </div>
 </template>
@@ -54,10 +78,10 @@
         position: relative;
         width: 25%;
         height: 50px;
-        line-height: 50px;
+        line-height: 35px;
         text-align: center;
         display: inline-block;
-        font-size: 15px;
+        font-size: 14px;
         color: @them-color;
         transition: all .2s linear;
         cursor: pointer;
@@ -78,7 +102,20 @@
           background-color: @them-color;
           color: @white;
           transition: all .2s linear;
+          ._icon{
+            fill: @white;
+          }
         }
+        ._icon{
+          position: relative;
+          display: block;
+          top: 5px;
+          left: .75rem;
+          fill: @them-color;
+          width: .4rem;
+          height: .4rem;
+        }
+
         
       }
       

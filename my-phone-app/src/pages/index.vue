@@ -46,7 +46,7 @@ export default {
   @import '../assets/layout.less';
 
   .index{
-    padding: 15px;
+    padding: 10px;
     min-height: 100%;
     overflow-y:scroll;
   }
