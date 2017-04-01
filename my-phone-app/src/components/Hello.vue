@@ -1,22 +1,7 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://gitter.im/vuejs/vue" target="_blank">Gitter Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-      <br>
-      <li><a href="http://vuejs-templates.github.io/webpack/" target="_blank">Docs for This Template</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+  <div class="hello" :style="{height:win_h+'px'}">   
+        <p class="animate-hello" :class="{animated:animated_class,rubberBand:animated_class}"><img src="../../static/images/flower.png"></p>
+        <p :class="{animated:hua_h,bounceInUp:hua_h,'animate-h':hua_h,fade:leave}"><img src="../../static/images/flower-h.png" alt=""></p>
   </div>
 </template>
 
@@ -25,29 +10,63 @@ export default {
   name: 'hello',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'Hello',
+      animated_class: false,
+      hua_h: false,
+      leave: true,
+      win_h: 0
+    }
+  },
+  created () {
+    let self = this
+    this.win_h = (window.innerHeight - 150)
+    self.skip()
+    self.animated_class = true
+    setTimeout(() => {
+      self.leave = false
+      self.hua_h = true
+    }, 1000)
+  },
+  methods: {
+    skip () {
+      // let self = this
+      // setTimeout(() => {
+      //   self.$router.push('/home')
+      //   self.animated_class = false
+      // }, 5000)
     }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
-}
+<style lang="less" scoped>
+  .hello{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    height: 600px;
+    overflow: hidden;
+    top: -80px;
+    overflow: hidden;
+    .animate-hello{
+      position: relative;
+      z-index: 11;
+      overflow: hidden;
+    }
+    .animate-h{
+      position: relative;
+      z-index: 10;
+      opacity: 1;
+      top: -500px;
+      img{
+        display: block;
+        position: relative;
+        transform:rotate(90deg);
+      }
+    }
+    .fade{
+      opacity: 0;
+    }
+  }
 </style>

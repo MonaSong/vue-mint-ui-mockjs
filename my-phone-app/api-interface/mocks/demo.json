@@ -1,0 +1,23 @@
+
+/**
+ * 测试接口
+ *
+ * @url /user
+ *
+ * 详细的说明
+ * uid: userID
+ * name: username
+ * email: 邮件
+ */
+
+{
+  "code": 0,
+  "result|20": [
+    {
+      "uid|+1": 1,
+      "name": "@name",
+      "email": "@email",
+      "img": "@image"
+    }
+  ]
+}
