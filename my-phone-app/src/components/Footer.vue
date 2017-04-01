@@ -55,6 +55,7 @@
         width: 25%;
         height: 50px;
         line-height: 50px;
+        text-align: center;
         display: inline-block;
         font-size: 15px;
         color: @them-color;

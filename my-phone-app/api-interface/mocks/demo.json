@@ -15,7 +15,7 @@
   "result|20": [
     {
       "uid|+1": 1,
-      "name": "@name",
+      "name": "@cname",
       "email": "@email",
       "img": "@image"
     }
