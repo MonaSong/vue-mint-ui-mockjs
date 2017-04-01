@@ -7,8 +7,10 @@
           <img :src="item.img" alt="">
         </div>
         <div class="info">
-          <p><span>姓名：</span><b>{{item.name}}</b></p>
-          <p><span>邮件：</span><b>{{item.email}}</b></p>
+          <span>姓名</span>
+          <p><b>{{item.name}}</b></p>
+          <span>邮件</span>
+          <p><b>{{item.email}}</b></p>
         </div>
       </div>
 
@@ -64,26 +66,37 @@ export default {
     .img{
       float: left;
       width: 20%;
-      height: 70px;
+      height: 80px;
       overflow: hidden;
       margin: 10px;
       img{
         width: 100%;
-        height: 70px;
+        height: 80px;
       }
     }
     .info{
       float: left;
       margin-top: .2rem;
       text-align: left;
-      font-size: .3rem;
+      font-size: .2rem;
       width: 70%;
       overflow: hidden;
+      p{
+        // height: 20px;
+        overflow: hidden;
+        margin-top: 5px;
+        margin-bottom: 5px;
+      }
       span{
         color: #999;
       }
       b{
         color: #666;
+        overflow : hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
     }
   }
