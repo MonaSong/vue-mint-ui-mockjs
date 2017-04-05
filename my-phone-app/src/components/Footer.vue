@@ -5,7 +5,7 @@
         <svg class="_icon">
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-home"></use>
         </svg>
-        首页
+        <span>首页</span>
         
       </router-link>
       </router-link>
@@ -13,21 +13,21 @@
         <svg class="_icon">
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-info"></use>
         </svg>
-        资讯
+        <span>资讯</span>
         
       </router-link>
       <router-link to="/home/center" tag="li" :class="{active:(onRoutes === 'center')}">
         <svg class="_icon">
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-img"></use>
         </svg>
-        我
+        <span>我</span>
         
       </router-link>
       <router-link to="/home/money" tag="li" :class="{active:(onRoutes === 'money')}">
         <svg class="_icon">
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-money"></use>
         </svg>
-        钱包 
+        <span>钱包</span> 
       </router-link>
     </ul>
   </div>
@@ -78,7 +78,6 @@
         position: relative;
         width: 25%;
         height: 50px;
-        line-height: 35px;
         text-align: center;
         display: inline-block;
         font-size: 14px;
@@ -105,20 +104,25 @@
           ._icon{
             fill: @white;
           }
+          span{
+            color: @white;
+          }
         }
         ._icon{
           position: relative;
-          display: block;
+          display: inline-block;
           top: 5px;
-          left: .75rem;
+          text-align: center;
           fill: @them-color;
-          width: .4rem;
-          height: .4rem;
+          width: .3rem;
+          height: .3rem;
         }
-
-        
-      }
-      
+        span{
+          display: block;
+          margin-top: 8px;
+          color: @them-color;
+        }
+      }  
     }
   }
 </style>
