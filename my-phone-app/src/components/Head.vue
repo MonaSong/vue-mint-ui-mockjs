@@ -30,6 +30,7 @@
     background-color: @them-color;
     color: @white;
     font-size: .3rem;
+    z-index: 20;
     .logo{
       float:left;
       margin-left: 10px;
