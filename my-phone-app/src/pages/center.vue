@@ -30,7 +30,11 @@
         <span
         data-role="audio-play-prev" 
         class="audio-play-prev"
-        @click="preveAudio">|&lt;</span>
+        @click="preveAudio">
+        <svg class="_icon">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-prev"></use>
+        </svg>
+        </span>
         <!--启动/暂停-->
         <b class="play" 
         :class="{active:is_play}"
@@ -39,7 +43,11 @@
         <span 
         data-role="audio-play-next" 
         class="audio-play-next"
-        @click="nextAudio">&gt;|</span>
+        @click="nextAudio">
+        <svg class="_icon">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-next"></use>
+        </svg>
+        </span>
       </div>
     </div>
   </div>
@@ -386,11 +394,12 @@
         
       }
       &.active:before{
-        top: -1px;
-        left: -6px;
+        top: -.02rem;
+        left: -.07rem;
         display: inline-block;
         content: '||';
         border: none;
+        font-weight: 800;
         color: @white;
       }
     }
@@ -521,6 +530,14 @@
       .audio-operator{
         position: relative;
         height: 50px;
+        & ._icon{
+          position: relative;
+          top: .1rem;
+          width: .4rem;
+          height: .4rem;
+          fill: @white;
+          stroke: @white;
+        }
       }
 
 </style>
