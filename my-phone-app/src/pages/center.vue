@@ -1,37 +1,45 @@
 <template>
   <div class="center">
+    <img :src="my_audio_img" alt="">
     <div class="audio-component" id="my-audio">
-      <audio :src="audio_url" controls 
-      @timeupdate.native="timeUpdate($event)" 
+      <audio :src="my_audio_url" controls 
       ref="music"
       @canplay="updateTime()"
-      v-show="false"></audio>
+      v-show="false" autoplay></audio>
       <div class="img-box">
         <span class="s-tip" :class="{active:is_play}"></span>
         <div class="img-ct" :class="{active:is_play}">
-          <img :src="audio_img" alt="">
+          <img :src="my_audio_img" alt="">
         </div> 
       </div>
       <span>{{cur_txt}}</span>
       <div class="time-line"></div>
       <span>{{resultTime}}</span>
       <div class="v-lyr">
-          <div class="lyr-text" ref="lyrText" v-show="false" v-html="lyr"></div>
-          <div class="lyr-list" ref="lyr">
-            <p
-              v-for="(s, index) in lyrList"
-              :class = "{'on': s.dis}">
-              {{ s.txt }}
-            </p>
-          </div>
+        <div class="lyr-text" ref="lyrText" v-show="false" v-html="lyr"></div>
+        <div class="lyr-list" ref="lyr">
+          <p
+            v-for="(s, index) in lyrList"
+            :class = "{'on': s.dis}">
+            {{ s.txt }}
+          </p>
         </div>
-
-      <div class="audio-operator"> 
-        <span data-role="audio-play-prev" class="audio-play-prev">&lt;</span>
+      </div>
+      <div class="audio-operator">
+        <!--前一首歌曲 -->
+        <span
+        data-role="audio-play-prev" 
+        class="audio-play-prev"
+        @click="preveAudio">|&lt;</span>
+        <!--启动/暂停-->
         <b class="play" 
         :class="{active:is_play}"
         @click="toggelPlay($event)"></b>
-        <span data-role="audio-play-next" class="audio-play-next">&gt;</span>
+        <!--后一首歌曲-->
+        <span 
+        data-role="audio-play-next" 
+        class="audio-play-next"
+        @click="nextAudio">&gt;|</span>
       </div>
     </div>
   </div>
@@ -42,53 +50,53 @@
     data () {
       return {
         center: 'center',
-        is_play: false,
+        is_play: true,
         lrc: null,
         cur_txt: null,
         nowTime: null,
         allTime: null,
         set: null,
         lyrList: [],
+        musicList: [
+          {
+            audio_url: '../../static/musics/zqzm/孙楠,许茹芸 - 真情真美.mp3',
+            lrc_url: '../../static/musics/zqzm/孙楠,许茹芸 - 真情真美.lrc',
+            audio_img: '../../static/musics/zqzm/zqzm.png'
+          },
+          {
+            audio_url: '../../static/musics/tn/罗大佑 - 童年.mp3',
+            lrc_url: '../../static/musics/tn/罗大佑 - 童年.lrc',
+            audio_img: '../../static/musics/tn/tn.png'
+          },
+          {
+            audio_url: '../../static/musics/ll/杨宗纬 张碧晨 - 凉凉.mp3',
+            lrc_url: '../../static/musics/ll/杨宗纬 张碧晨 - 凉凉.lrc',
+            audio_img: '../../static/musics/ll/ll.png'
+          },
+          {
+            audio_url: '../../static/musics/wlyjn/戚薇,杨宗纬 - 为了遇见你.mp3',
+            lrc_url: '../../static/musics/wlyjn/戚薇,杨宗纬 - 为了遇见你.lrc',
+            audio_img: '../../static/musics/wlyjn/wlyjn.png'
+          },
+          {
+            audio_url: '../../static/musics/ynzj/张杰,莫文蔚 - 一念之间.mp3',
+            lrc_url: '../../static/musics/ynzj/张杰,莫文蔚 - 一念之间.lrc',
+            audio_img: '../../static/musics/ynzj/ynzj.png'
+          }
+        ],
+        cur_music: null,
         lyr: '',
-        base_audio: '../../static/musics',
-        audio_url: '../../static/musics/zqzm/孙楠,许茹芸 - 真情真美.mp3',
-        lrc_url: '../../static/musics/zqzm/孙楠,许茹芸 - 真情真美.lrc',
-        audio_img: '../../static/musics/zqzm/zqzm.png'
-        // audio_url: '../../static/musics/tn/罗大佑 - 童年.mp3',
-        // lrc_url: '../../static/musics/tn/罗大佑 - 童年.lrc',
-        // audio_img: '../../static/musics/tn/tn.png'
+        my_audio_url: '',
+        my_lrc_url: '',
+        my_audio_img: '',
+        my_audio_index: 0
       }
     },
     created () {
-      let self = this
-      self.getLrc(function (data) {
-        console.log(JSON.stringify(data.data))
-        // self.lrc = self.parseLyric(data.data)
-        self.lyr = data.data
-        console.log('当前')
-        console.log(self.lrc)
-        self.lyrList = [
-          {
-            min: 999,
-            sec: 999,
-            ms: 999,
-            total: 999,
-            txt: '歌词正在疯狂加载中...'
-          }
-        ]
-      })
     },
     mounted  () {
-      const self = this
-      let audio = self.$refs.music
-      // 得到播放音乐的时间
-      audio.addEventListener('loadeddata', function () {
-        let audioDuration = audio.duration
-        let audioCurrentTime = audio.currentTime
-        self.allTime = audioDuration
-        self.nowTime = audioCurrentTime
-      }, false)
-      self.nowTime = 0
+      let self = this
+      self.startMusic()
     },
     computed: {
       resultTime () {
@@ -104,6 +112,47 @@
       }
     },
     methods: {
+      startMusic () {
+        let self = this
+        let audio = self.$refs.music
+        // 得到播放音乐的时间
+        audio.addEventListener('loadeddata', function () {
+          let audioDuration = audio.duration
+          let audioCurrentTime = audio.currentTime
+          self.allTime = audioDuration
+          self.nowTime = audioCurrentTime
+          self.start()
+          self.showLyr()
+        }, false)
+        self.nowTime = 0
+        self.getMusicInfo()
+      },
+      // 拿到歌词
+      getMusicInfo () {
+        let self = this
+        // 将当前歌词赋值给歌词变量
+        self.cur_music = self.musicList[self.my_audio_index]
+        self.my_audio_url = self.cur_music.audio_url
+        self.my_lrc_url = self.cur_music.lrc_url
+        self.my_audio_img = self.cur_music.audio_img
+        // 拿到当前歌词
+        self.getLrc(function (data) {
+          self.lyr = data.data
+          console.log('当前歌词数据')
+          console.log(self.lrc)
+          // 以下是歌词没加载时的默认显示数据
+          // self.lyrList = [
+          //   {
+          //     min: 999,
+          //     sec: 999,
+          //     ms: 999,
+          //     total: 999,
+          //     txt: '歌词正在疯狂加载中...'
+          //   }
+          // ]
+        })
+      },
+      // 更新歌词
       updateLyr () {
         if (this.lyrList.length < 1) {
           return false
@@ -181,17 +230,30 @@
           this.updateLyr()
         })
       },
+      // 更新时间
       updateTime () {
-        this.nowTime = this.$refs.music.currentTime
-        this.allTime = this.$refs.music.duration
+        // alert(1)
+        let self = this
+        if (self.$refs && self.$refs.music !== 'undefined') {
+          self.nowTime = self.$refs.music.currentTime
+          self.allTime = self.$refs.music.duration
+          if (self.$refs.music.ended) {
+            self.is_play = false
+          }
+        }
       },
       // 开始计时 并更新时间
       start () {
+        let self = this
+        self.is_play = true
         if (this.songname === '') {
           return false
         }
         this.set = setInterval(() => {
           // 更新时间
+          if (!self.$refs || !self.$refs.music) {
+            return ''
+          }
           this.updateTime()
           // 更新展示歌词
           this.updateLyr()
@@ -201,6 +263,7 @@
       stop () {
         clearInterval(this.set)
       },
+      // 暂停或启动
       toggelPlay (e) {
         let self = this
         let audioDom = e.target.parentNode.parentNode.getElementsByTagName('audio')[0]
@@ -209,16 +272,16 @@
           self.is_play = true
           self.start()
           self.showLyr()
-          self.updateTime()
         } else {
           audioDom.pause()
           self.is_play = false
           self.stop()
         }
       },
+      // 获取歌词的方法
       getLrc (callback) {
         let self = this
-        this.$http.get(self.lrc_url).then(function (data) {
+        this.$http.get(self.my_lrc_url).then(function (data) {
           console.log(data)
           if (typeof callback === 'function') {
             callback(data)
@@ -227,17 +290,25 @@
           console.log(err)
         })
       },
-      timeUpdate (e) {
+      // 下一首歌曲
+      nextAudio () {
         let self = this
-        let curAudioDom = e.target
-        curAudioDom.addEventListener('timeupdate', () => {
-          if (curAudioDom.currentTime > self.lrc[1][0]) {
-            let self = this
-            self.lrc = self.lrc[1][1]
-            self.cur_txt = self.lrc
-            self.lrc.shift()
-          }
-        }, false)
+        if (self.my_audio_index < self.musicList.length - 1) {
+          self.my_audio_index++
+        } else {
+          self.my_audio_index = 0
+        }
+        self.startMusic()
+      },
+      // 上一首歌曲
+      preveAudio () {
+        let self = this
+        if (self.my_audio_index === 0) {
+          self.my_audio_index = self.musicList.length - 1
+        } else {
+          self.my_audio_index--
+        }
+        self.startMusic()
       }
     },
     directives: {
@@ -268,8 +339,22 @@
       width: 40px;
       height: 40px;
     }
+    &:before,
+    &:after{
+      display: block;
+      content: ' ';
+      clear: both;
+    }
+    &>img{
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      height: 100%;
+      position: fixed;
+      opacity: .2;
+    }
   }
-
   .audio-component{
       // height: 60px;
       line-height: 60px;
@@ -283,13 +368,13 @@
       width: 30px;
       height: 30px;
       line-height: 30px;
-      background-color: #f5f5f5;
+      background-color: @them-color;
       border-radius: 100%;
       cursor: pointer;
       text-align: center;
       &:before{
-        top: 5px;
-        left: 5px;
+        top: 4px;
+        left: 7px;
         display: inline-block;
         position: relative;
         content: ' ';
@@ -297,16 +382,16 @@
         width: 0;
         border-width: 10px;
         border-style: solid;
-        border-color: transparent transparent transparent @them-color;
+        border-color: transparent transparent transparent @white;
         
       }
       &.active:before{
         top: -1px;
-        left: -4px;
+        left: -6px;
         display: inline-block;
         content: '||';
         border: none;
-        color: @them-color;
+        color: @white;
       }
     }
     .audio-play-prev,
@@ -323,24 +408,19 @@
       transition: background-color .2s linear;
       color: @white;
     }
-    .audio-play-prev:hover,
-    .audio-play-next:hover {
-      background-color: #eaeaea;
-      transition: background-color .2s linear;
-    }
     .audio-play-prev{
       left: -70px;
     }
     .audio-play-next{
       left: 70px;
     }
-
     .v-lyr {
         height: 90px;
-        background: #fff;
+        background: @gray;
         text-align: center;
         overflow: hidden;
         margin: -10px 0 7px;
+        opacity: 1;
         .lyr-list {
           transition: transform 0.4s ease-out;
         }

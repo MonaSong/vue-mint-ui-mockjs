@@ -2,11 +2,18 @@
 @them-color:#41B883;
 @font-color:#999;
 
+html{
+  position: relative;
+  min-height: 100%;
+}
 body{
   font-family: @font-f;
   color: @font-color;
   margin: 0;
   background-color: #fafafa;
+  max-width: 500px;
+  margin: 0 auto;
+  min-height: 100%;
 }
 .slide-fade-enter-active {
   transition: all .2s ease;
