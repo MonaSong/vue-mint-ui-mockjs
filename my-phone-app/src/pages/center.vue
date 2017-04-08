@@ -8,7 +8,7 @@
       v-show="false" autoplay></audio>
       <div class="img-box">
         <span class="s-tip" :class="{active:is_play}"></span>
-        <div class="img-ct" :class="{active:is_play}">
+        <div class="img-ct" :class="{active:is_play,poused:!is_play}">
           <img :src="my_audio_img" alt="">
         </div> 
       </div>
@@ -478,11 +478,21 @@
           border-radius: 100%;
           background-image: url('../../static/images/s-cicle.png');
           background-size: cover;
+          animation:cicle 10s infinite;
+          -webkit-animation:cicle 10s linear infinite;
+          -moz-animation:cicle 10s linear infinite;
+          -ms-animation:cicle 10s linear infinite
           &.active{
             animation:cicle 10s infinite;
             -webkit-animation:cicle 10s linear infinite;
             -moz-animation:cicle 10s linear infinite;
             -ms-animation:cicle 10s linear infinite
+          }
+          &.poused{
+              animation-play-state: paused;
+              -webkit-animation-play-state: paused;
+              -moz-animation-play-state: paused;
+              -ms-animation-play-state: paused;
           }
           img{
             position: relative;
