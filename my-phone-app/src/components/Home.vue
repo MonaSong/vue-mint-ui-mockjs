@@ -23,3 +23,9 @@
     }
   }
 </script>
+
+<style lang="less" scoped> 
+  .home{
+    padding-top: 60px;
+  }
+</style>

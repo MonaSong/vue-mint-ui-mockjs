@@ -14,7 +14,9 @@
       </div>
       <span>{{cur_txt}}</span>
       <div class="time-line"></div>
+      <br><br>
       <span>{{resultTime}}</span>
+      <br><br>
       <div class="v-lyr">
         <div class="lyr-text" ref="lyrText" v-show="false" v-html="lyr"></div>
         <div class="lyr-list" ref="lyr">
@@ -38,7 +40,11 @@
         <!--启动/暂停-->
         <b class="play" 
         :class="{active:is_play}"
-        @click="toggelPlay($event)"></b>
+        @click="toggelPlay($event)">
+        <svg class="_icon">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-pause"></use>
+        </svg>
+        </b>
         <!--后一首歌曲-->
         <span 
         data-role="audio-play-next" 
@@ -341,6 +347,7 @@
 <style lang="less" scoped>
   @import '../assets/layout.less';
   .center{
+    position: relative;
     font-size: .3rem;
     .history_right{
       fill: #aaa;
@@ -358,6 +365,7 @@
       left: 0;
       bottom: 0;
       right: 0;
+      width: 100%;
       height: 100%;
       position: fixed;
       opacity: .2;
@@ -365,50 +373,58 @@
   }
   .audio-component{
       // height: 60px;
-      line-height: 60px;
-      width: 300px;
-      margin: 100px auto;
+      /*line-height: 60px;*/
+      padding-top: 45px;
+      margin: 0 auto;
       text-align: center;
       border-radius: 2px;
     }
     .play{
+      position: relative;
       display: inline-block;
-      width: 30px;
-      height: 30px;
-      line-height: 30px;
+      width: .6rem;
+      height: .6rem;
       background-color: @them-color;
       border-radius: 100%;
       cursor: pointer;
-      text-align: center;
+      text-align: right;
       &:before{
-        top: 4px;
-        left: 7px;
-        display: inline-block;
         position: relative;
+        top: .08rem;
+        display: inline-block;
         content: ' ';
         height: 0;
         width: 0;
-        border-width: 10px;
+        /*border-width: .2rem;*/
         border-style: solid;
         border-color: transparent transparent transparent @white;
         
       }
+      &.active{
+        text-align: center;
+      }
       &.active:before{
-        top: -.02rem;
-        left: -.07rem;
+        top: -.1rem;
+        left: -.1rem;
+        font-size: .3rem;
         display: inline-block;
-        content: '||';
-        border: none;
+        /*content: '||';*/
+        border-color: transparent transparent transparent transparent;
         font-weight: 800;
         color: @white;
+      }
+      &>._icon{
+        width: .2rem;
+        height: .2rem;
+        fill: @white;
       }
     }
     .audio-play-prev,
     .audio-play-next{
       position: relative;
       display: inline-block;
-      width: 30px;
-      height: 30px;
+      width: .6rem;
+      height: .6rem;
       border-radius: 100%;
       background-color: @them-color;
       line-height: 28px;
@@ -428,7 +444,7 @@
         background: @gray;
         text-align: center;
         overflow: hidden;
-        margin: -10px 0 7px;
+        margin: -10px 0 10px;
         opacity: 1;
         .lyr-list {
           transition: transform 0.4s ease-out;
@@ -456,7 +472,7 @@
           display: inline-block;
           position: absolute;
           z-index: 10;
-          top: -63px;
+          top: -68px;
           left: 38px;
           height: 100px;
           width: 100px;
@@ -542,12 +558,11 @@
         height: 50px;
         & ._icon{
           position: relative;
-          top: .1rem;
+          top: .07rem;
           width: .4rem;
           height: .4rem;
           fill: @white;
           stroke: @white;
         }
       }
-
 </style>

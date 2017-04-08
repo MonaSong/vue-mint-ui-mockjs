@@ -11,9 +11,9 @@ body{
   color: @font-color;
   margin: 0;
   background-color: #fafafa;
-  max-width: 500px;
   margin: 0 auto;
   min-height: 100%;
+  position: relative;
 }
 .slide-fade-enter-active {
   transition: all .2s ease;
@@ -30,4 +30,12 @@ body{
 ul{
   margin: 0;
   padding: 0;
+}
+
+@media (min-width:320px){
+  body{
+    html,body{
+      max-width: 320px;
+    }
+  }
 }
