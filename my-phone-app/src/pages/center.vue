@@ -41,9 +41,9 @@
         <b class="play" 
         :class="{active:is_play}"
         @click="toggelPlay($event)">
-        <svg class="_icon">
+        <!--<svg class="_icon">
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-pause"></use>
-        </svg>
+        </svg>-->
         </b>
         <!--后一首歌曲-->
         <span 
@@ -348,6 +348,7 @@
   @import '../assets/layout.less';
   .center{
     position: relative;
+    overflow-x: hidden;
     font-size: .3rem;
     .history_right{
       fill: #aaa;
@@ -395,7 +396,7 @@
         content: ' ';
         height: 0;
         width: 0;
-        /*border-width: .2rem;*/
+        border-width: .2rem;
         border-style: solid;
         border-color: transparent transparent transparent @white;
         
@@ -408,7 +409,7 @@
         left: -.1rem;
         font-size: .3rem;
         display: inline-block;
-        /*content: '||';*/
+        content: '||';
         border-color: transparent transparent transparent transparent;
         font-weight: 800;
         color: @white;
@@ -464,8 +465,8 @@
       .img-box{
         position: relative;
         margin: 0 auto;
-        height: 200px;
-        width: 200px;
+        height: 300px;
+        width: 300px;
         top: 18px;
         background-size: cover;
         .s-tip{
@@ -473,8 +474,8 @@
           position: absolute;
           z-index: 10;
           top: -68px;
-          left: 38px;
-          height: 100px;
+          left: 140px;
+          height: 140px;
           width: 100px;
           background-image: url('../../static/images/s-tip.png');
           background-size: cover;
@@ -489,8 +490,9 @@
           }
         }
         .img-ct{
-          height: 200px;
-          width: 200px;
+          height: 300px;
+          width: 300px;
+          overflow: hidden;
           border-radius: 100%;
           background-image: url('../../static/images/s-cicle.png');
           background-size: cover;
@@ -512,9 +514,9 @@
           }
           img{
             position: relative;
-            top: 35px;
-            width: 135px;
-            height: 135px;
+            top: 49px;
+            width: 200px;
+            height: 200px;
             border-radius: 150%;
           }
         }
