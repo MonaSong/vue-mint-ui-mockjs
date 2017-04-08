@@ -41,9 +41,10 @@
         <b class="play" 
         :class="{active:is_play}"
         @click="toggelPlay($event)">
-        <!--<svg class="_icon">
-          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-pause"></use>
-        </svg>-->
+          <svg class="_icon">
+            <use v-if="is_play" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-playing"></use>         
+            <use v-else xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-pause"></use>
+          </svg>      
         </b>
         <!--后一首歌曲-->
         <span 
@@ -280,7 +281,7 @@
       // 暂停或启动
       toggelPlay (e) {
         let self = this
-        let audioDom = e.target.parentNode.parentNode.getElementsByTagName('audio')[0]
+        let audioDom = self.$refs.music
         if (!self.is_play) {
           audioDom.play()
           self.is_play = true
@@ -391,28 +392,28 @@
       text-align: right;
       &:before{
         position: relative;
-        top: .08rem;
+        /*top: .08rem;
         display: inline-block;
         content: ' ';
         height: 0;
         width: 0;
         border-width: .2rem;
         border-style: solid;
-        border-color: transparent transparent transparent @white;
+        border-color: transparent transparent transparent @white;*/
         
       }
       &.active{
         text-align: center;
       }
       &.active:before{
-        top: -.1rem;
+        /*top: -.1rem;
         left: -.1rem;
         font-size: .3rem;
         display: inline-block;
         content: '||';
         border-color: transparent transparent transparent transparent;
         font-weight: 800;
-        color: @white;
+        color: @white;*/
       }
       &>._icon{
         width: .2rem;
