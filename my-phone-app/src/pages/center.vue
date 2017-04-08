@@ -389,32 +389,7 @@
       background-color: @them-color;
       border-radius: 100%;
       cursor: pointer;
-      text-align: right;
-      &:before{
-        position: relative;
-        /*top: .08rem;
-        display: inline-block;
-        content: ' ';
-        height: 0;
-        width: 0;
-        border-width: .2rem;
-        border-style: solid;
-        border-color: transparent transparent transparent @white;*/
-        
-      }
-      &.active{
-        text-align: center;
-      }
-      &.active:before{
-        /*top: -.1rem;
-        left: -.1rem;
-        font-size: .3rem;
-        display: inline-block;
-        content: '||';
-        border-color: transparent transparent transparent transparent;
-        font-weight: 800;
-        color: @white;*/
-      }
+      text-align: center;
       &>._icon{
         width: .2rem;
         height: .2rem;
@@ -443,7 +418,6 @@
     }
     .v-lyr {
         height: 90px;
-        background: @gray;
         text-align: center;
         overflow: hidden;
         margin: -10px 0 10px;
