@@ -26,7 +26,12 @@ body{
   transform: translateX(15px);
   opacity: 0;
 }
-
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0
+}
 ul{
   margin: 0;
   padding: 0;

@@ -247,7 +247,6 @@
       },
       // 更新时间
       updateTime () {
-        // alert(1)
         let self = this
         if (self.$refs && self.$refs.music !== 'undefined') {
           self.nowTime = self.$refs.music.currentTime
@@ -448,13 +447,13 @@
           display: inline-block;
           position: absolute;
           z-index: 10;
-          top: -68px;
+          top: -63px;
           left: 140px;
           height: 140px;
           width: 100px;
           background-image: url('../../static/images/s-tip.png');
           background-size: cover;
-          transform: rotate(-20deg);
+          transform: rotate(-15deg);
           transition: all .3s linear;
           -ms-transform-origin: 0 0;
           -webkit-transform-origin: 0 0;
