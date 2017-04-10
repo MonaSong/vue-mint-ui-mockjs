@@ -270,6 +270,9 @@
       // 更新时间
       updateTime () {
         let self = this
+        if (!self.$refs) {
+          return ''
+        }
         if (self.$refs && self.$refs.music !== 'undefined') {
           self.nowTime = self.$refs.music.currentTime
           self.allTime = self.$refs.music.duration
@@ -282,11 +285,11 @@
       start () {
         let self = this
         // 更新时间
-        if (!self.$refs || !self.$refs.music) {
-          return ''
-        }
         self.is_play = true
         this.set = setInterval(() => {
+          if (!self.$refs || !self.$refs.music) {
+            return ''
+          }
           this.updateTime()
           // 更新展示歌词
           this.updateLyr()
