@@ -1,6 +1,6 @@
 <template>
   <div class="center">
-    <img :src="my_audio_img" alt="">
+    <img :src="my_bg_img" alt="">
     <div class="audio-component" id="my-audio">
       <!--audio播放器-->
       <audio :src="my_audio_url" controls 
@@ -88,27 +88,32 @@
           {
             audio_url: '../../static/musics/zqzm/孙楠,许茹芸 - 真情真美.mp3',
             lrc_url: '../../static/musics/zqzm/孙楠,许茹芸 - 真情真美.lrc',
-            audio_img: '../../static/musics/zqzm/zqzm.png'
+            audio_img: '../../static/musics/zqzm/zqzm.png',
+            audio_bg_img: '../../static/musics/zqzm/zqzm-blur.png'
           },
           {
             audio_url: '../../static/musics/tn/罗大佑 - 童年.mp3',
             lrc_url: '../../static/musics/tn/罗大佑 - 童年.lrc',
-            audio_img: '../../static/musics/tn/tn.png'
+            audio_img: '../../static/musics/tn/tn.png',
+            audio_bg_img: '../../static/musics/tn/tn-blur.png'
           },
           {
             audio_url: '../../static/musics/ll/杨宗纬 张碧晨 - 凉凉.mp3',
             lrc_url: '../../static/musics/ll/杨宗纬 张碧晨 - 凉凉.lrc',
-            audio_img: '../../static/musics/ll/ll.png'
+            audio_img: '../../static/musics/ll/ll.png',
+            audio_bg_img: '../../static/musics/ll/ll-blur.png'
           },
           {
             audio_url: '../../static/musics/wlyjn/戚薇,杨宗纬 - 为了遇见你.mp3',
             lrc_url: '../../static/musics/wlyjn/戚薇,杨宗纬 - 为了遇见你.lrc',
-            audio_img: '../../static/musics/wlyjn/wlyjn.png'
+            audio_img: '../../static/musics/wlyjn/wlyjn.png',
+            audio_bg_img: '../../static/musics/wlyjn/wlyjn-blur.png'
           },
           {
             audio_url: '../../static/musics/ynzj/张杰,莫文蔚 - 一念之间.mp3',
             lrc_url: '../../static/musics/ynzj/张杰,莫文蔚 - 一念之间.lrc',
-            audio_img: '../../static/musics/ynzj/ynzj.png'
+            audio_img: '../../static/musics/ynzj/ynzj.png',
+            audio_bg_img: '../../static/musics/ynzj/ynzj-blur.png'
           }
         ],
         cur_music: null,
@@ -116,6 +121,7 @@
         my_audio_url: '',
         my_lrc_url: '',
         my_audio_img: '',
+        my_bg_img: '',
         my_audio_index: 0,
         my_cur_time_width: 3,
         nowX: 0,
@@ -165,6 +171,7 @@
         self.my_audio_url = self.cur_music.audio_url
         self.my_lrc_url = self.cur_music.lrc_url
         self.my_audio_img = self.cur_music.audio_img
+        self.my_bg_img = self.cur_music.audio_bg_img
         // 拿到当前歌词
         self.getLrc(function (data) {
           self.lyr = data.data
@@ -414,11 +421,12 @@
       width: 100%;
       height: 100%;
       position: fixed;
-      -webkit-filter: blur(10px); /* Chrome, Opera */
-       -moz-filter: blur(10px);
-        -ms-filter: blur(10px);
-            filter: blur(10px);
-      filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=10, MakeShadow=false); /* IE6~IE9 */
+      // 滤镜开销比较大
+      // -webkit-filter: blur(10px); /* Chrome, Opera */
+      //  -moz-filter: blur(10px);
+      //   -ms-filter: blur(10px);
+      //       filter: blur(10px);
+      // filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=10, MakeShadow=false); /* IE6~IE9 */
     }
   }
   .audio-component{
