@@ -69,7 +69,6 @@
     position: fixed;
     width: 100%;
     z-index: 1000;
-    border-top: 1px solid #eaeaea;
     background-color: @white;
     bottom: 0;
     ul{ 

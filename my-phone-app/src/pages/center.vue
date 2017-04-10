@@ -146,12 +146,12 @@
         let self = this
         let audio = self.$refs.music
         // 得到播放音乐的时间
+        self.start()
         audio.addEventListener('loadeddata', function () {
           let audioDuration = audio.duration
           let audioCurrentTime = audio.currentTime
           self.allTime = audioDuration
           self.nowTime = audioCurrentTime
-          self.start()
           self.showLyr()
         }, false)
         self.nowTime = 0
@@ -274,15 +274,12 @@
       // 开始计时 并更新时间
       start () {
         let self = this
-        self.is_play = true
-        if (this.songname === '') {
-          return false
+        // 更新时间
+        if (!self.$refs || !self.$refs.music) {
+          return ''
         }
+        self.is_play = true
         this.set = setInterval(() => {
-          // 更新时间
-          if (!self.$refs || !self.$refs.music) {
-            return ''
-          }
           this.updateTime()
           // 更新展示歌词
           this.updateLyr()
@@ -376,9 +373,6 @@
         window.removeEventListener('touchmove', this.move)
         window.removeEventListener('mouseup', this.leave)
         window.removeEventListener('touchend', this.leave)
-        if (this.is_play === true) {
-          this.start()
-        }
       }
     },
     directives: {
@@ -420,10 +414,10 @@
       width: 100%;
       height: 100%;
       position: fixed;
-      -webkit-filter: blur(50px); /* Chrome, Opera */
-       -moz-filter: blur(50px);
-        -ms-filter: blur(50px);
-            filter: blur(50px);
+      -webkit-filter: blur(10px); /* Chrome, Opera */
+       -moz-filter: blur(10px);
+        -ms-filter: blur(10px);
+            filter: blur(10px);
       filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=10, MakeShadow=false); /* IE6~IE9 */
     }
   }
@@ -571,6 +565,7 @@
           background-color: @font-color;
           .go-bar{
             position: relative;
+            width: 0;
             height: 3px;
             background-color: @them-color;
             &>._icon{
