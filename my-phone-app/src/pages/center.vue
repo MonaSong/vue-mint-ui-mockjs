@@ -277,7 +277,8 @@
           self.nowTime = self.$refs.music.currentTime
           self.allTime = self.$refs.music.duration
           if (self.$refs.music.ended) {
-            self.is_play = false
+            // self.is_play = false
+            self.nextAudio()
           }
         }
       },
