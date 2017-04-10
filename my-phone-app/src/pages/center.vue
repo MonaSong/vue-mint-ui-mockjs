@@ -343,16 +343,17 @@
       // 拖拽时间轴
       drap (e) {
         // 先停止更新时间和歌词
+        let self = this
         this.stop()
         e.preventDefault()
         this.oldX = e.clientX ? e.clientX : e.touches[0].clientX
         this.nowLine = window.getComputedStyle(this.$refs.lineIn).width
         this.nowLine = this.nowLine.replace('px', '')
         this.$refs.lineIn.style.transitionDuration = '0s'
-        window.addEventListener('mousemove', this.move)
-        window.addEventListener('touchmove', this.move)
-        window.addEventListener('mouseup', this.leave)
-        window.addEventListener('touchend', this.leave)
+        window.addEventListener('mousemove', self.move)
+        window.addEventListener('touchmove', self.move)
+        window.addEventListener('mouseup', self.leave)
+        window.addEventListener('touchend', self.leave)
       },
       move (e) {
         var all = window.getComputedStyle(this.$refs.bar).width
@@ -423,6 +424,7 @@
        -moz-filter: blur(50px);
         -ms-filter: blur(50px);
             filter: blur(50px);
+      filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=10, MakeShadow=false); /* IE6~IE9 */
     }
   }
   .audio-component{
@@ -459,7 +461,7 @@
         display: block;
         font-size: 12px;
         line-height: 15px;
-        color: #666;
+        color: @white;
         opacity: .4;
       }
       p.on {
