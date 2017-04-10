@@ -419,7 +419,10 @@
       width: 100%;
       height: 100%;
       position: fixed;
-      opacity: .2;
+      -webkit-filter: blur(50px); /* Chrome, Opera */
+       -moz-filter: blur(50px);
+        -ms-filter: blur(50px);
+            filter: blur(50px);
     }
   }
   .audio-component{
