@@ -2,21 +2,19 @@
   <div class="center">
     <img :src="my_audio_img" alt="">
     <div class="audio-component" id="my-audio">
+      <!--audio播放器-->
       <audio :src="my_audio_url" controls 
       ref="music"
       @canplay="updateTime()"
       v-show="false" autoplay></audio>
+      <!--旋转效果-->
       <div class="img-box">
         <span class="s-tip" :class="{active:is_play}"></span>
         <div class="img-ct" :class="{active:is_play,poused:!is_play}">
           <img :src="my_audio_img" alt="">
         </div> 
       </div>
-      <span>{{cur_txt}}</span>
-      <div class="time-line"></div>
-      <br><br>
-      <span>{{resultTime}}</span>
-      <br><br>
+      <!--歌词-->
       <div class="v-lyr">
         <div class="lyr-text" ref="lyrText" v-show="false" v-html="lyr"></div>
         <div class="lyr-list" ref="lyr">
@@ -27,34 +25,49 @@
           </p>
         </div>
       </div>
+      <!--歌曲控制器-->
       <div class="audio-operator">
-        <!--前一首歌曲 -->
-        <span
-        data-role="audio-play-prev" 
-        class="audio-play-prev"
-        @click="preveAudio">
-        <svg class="_icon">
-          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-prev"></use>
-        </svg>
-        </span>
-        <!--启动/暂停-->
-        <b class="play" 
-        :class="{active:is_play}"
-        @click="toggelPlay($event)">
+        <!--时间线-->
+        <div class="time-line" ref="bar">
+          <div class="go-bar" :style="{ width: (nowTime/allTime) * 100 + '%'}" ref="lineIn">
+            <svg class="_icon" @mousedown="drap($event)" @touchstart="drap($event)">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-go-cicle"></use>
+            </svg>
+          </div>
+          <span class="current-time">{{resultTime.nowTime}}</span>
+          <span class="all-time">{{resultTime.allTime}}</span>
+        </div>
+        <!--播放时间-->
+        
+        <div class="controle-info">
+          <!--前一首歌曲 -->
+          <span
+          data-role="audio-play-prev" 
+          class="audio-play-prev"
+          @click="preveAudio">
           <svg class="_icon">
-            <use v-if="is_play" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-playing"></use>         
-            <use v-else xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-pause"></use>
-          </svg>      
-        </b>
-        <!--后一首歌曲-->
-        <span 
-        data-role="audio-play-next" 
-        class="audio-play-next"
-        @click="nextAudio">
-        <svg class="_icon">
-          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-next"></use>
-        </svg>
-        </span>
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-prev"></use>
+          </svg>
+          </span>
+          <!--启动/暂停-->
+          <b class="play" 
+          :class="{active:is_play}"
+          @click="toggelPlay($event)">
+            <svg class="_icon">
+              <use v-if="is_play" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-playing"></use>         
+              <use v-else xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-pause"></use>
+            </svg>      
+          </b>
+          <!--后一首歌曲-->
+          <span 
+          data-role="audio-play-next" 
+          class="audio-play-next"
+          @click="nextAudio">
+          <svg class="_icon">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-next"></use>
+          </svg>
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -67,7 +80,6 @@
         center: 'center',
         is_play: true,
         lrc: null,
-        cur_txt: null,
         nowTime: null,
         allTime: null,
         set: null,
@@ -104,7 +116,10 @@
         my_audio_url: '',
         my_lrc_url: '',
         my_audio_img: '',
-        my_audio_index: 0
+        my_audio_index: 0,
+        my_cur_time_width: 3,
+        nowX: 0,
+        nowLine: 0
       }
     },
     created () {
@@ -123,7 +138,7 @@
           s = s > 9 ? s : '0' + s
           return m + ':' + s
         }
-        return two(this.nowTime) + ' / ' + two(this.allTime)
+        return {nowTime: two(this.nowTime), allTime: two(this.allTime)}
       }
     },
     methods: {
@@ -275,7 +290,8 @@
       },
       // 暂停计时
       stop () {
-        clearInterval(this.set)
+        let self = this
+        clearInterval(self.set)
       },
       // 暂停或启动
       toggelPlay (e) {
@@ -287,9 +303,9 @@
           self.start()
           self.showLyr()
         } else {
-          audioDom.pause()
           self.is_play = false
           self.stop()
+          audioDom.pause()
         }
       },
       // 获取歌词的方法
@@ -323,6 +339,45 @@
           self.my_audio_index--
         }
         self.startMusic()
+      },
+      // 拖拽时间轴
+      drap (e) {
+        // 先停止更新时间和歌词
+        this.stop()
+        e.preventDefault()
+        this.oldX = e.clientX ? e.clientX : e.touches[0].clientX
+        this.nowLine = window.getComputedStyle(this.$refs.lineIn).width
+        this.nowLine = this.nowLine.replace('px', '')
+        this.$refs.lineIn.style.transitionDuration = '0s'
+        window.addEventListener('mousemove', this.move)
+        window.addEventListener('touchmove', this.move)
+        window.addEventListener('mouseup', this.leave)
+        window.addEventListener('touchend', this.leave)
+      },
+      move (e) {
+        var all = window.getComputedStyle(this.$refs.bar).width
+        all = all.replace('px', '')
+        this.nowX = e.clientX ? e.clientX : e.touches[0].clientX
+        var end = Number(this.nowX - this.oldX) + Number(this.nowLine)
+        end = end > all ? all : end < 0 ? 0 : end
+        this.nowTime = Number(((end / all) * this.allTime).toFixed(3))
+        // 拖拽时歌词
+        this.updateLyr()
+      },
+      // 结束拖拽
+      leave (e) {
+        if (this.oldX !== 0) {
+          this.oldX = 0
+          this.$refs.music.currentTime = this.nowTime
+          this.$refs.lineIn.style.transitionDuration = '0.05s'
+        }
+        window.removeEventListener('mousemove', this.move)
+        window.removeEventListener('touchmove', this.move)
+        window.removeEventListener('mouseup', this.leave)
+        window.removeEventListener('touchend', this.leave)
+        if (this.is_play === true) {
+          this.start()
+        }
       }
     },
     directives: {
@@ -350,11 +405,6 @@
     position: relative;
     overflow-x: hidden;
     font-size: .3rem;
-    .history_right{
-      fill: #aaa;
-      width: 40px;
-      height: 40px;
-    }
     &:before,
     &:after{
       display: block;
@@ -373,166 +423,198 @@
     }
   }
   .audio-component{
-      // height: 60px;
-      /*line-height: 60px;*/
-      padding-top: 45px;
-      margin: 0 auto;
-      text-align: center;
-      border-radius: 2px;
+    padding-top: 45px;
+    margin: 0 auto;
+    text-align: center;
+    border-radius: 2px;
+  }
+  .play{
+    position: relative;
+    display: inline-block;
+    width: .6rem;
+    height: .6rem;
+    background-color: @them-color;
+    border-radius: 100%;
+    cursor: pointer;
+    text-align: center;
+    &>._icon{
+      width: .2rem;
+      height: .2rem;
+      fill: @white;
     }
-    .play{
-      position: relative;
-      display: inline-block;
-      width: .6rem;
-      height: .6rem;
-      background-color: @them-color;
-      border-radius: 100%;
-      cursor: pointer;
+  }
+  .v-lyr {
+      height: 90px;
       text-align: center;
-      &>._icon{
-        width: .2rem;
-        height: .2rem;
-        fill: @white;
+      overflow: hidden;
+      margin: 10px 0 10px;
+      opacity: 1;
+      .lyr-list {
+        transition: transform 0.4s ease-out;
       }
-    }
-    .audio-play-prev,
-    .audio-play-next{
-      position: relative;
-      display: inline-block;
-      width: .6rem;
-      height: .6rem;
-      border-radius: 100%;
-      background-color: @them-color;
-      line-height: 28px;
-      text-align: center;
-      cursor: pointer;
-      transition: background-color .2s linear;
-      color: @white;
-    }
-    .audio-play-prev{
-      left: -70px;
-    }
-    .audio-play-next{
-      left: 70px;
-    }
-    .v-lyr {
-        height: 90px;
-        text-align: center;
-        overflow: hidden;
-        margin: -10px 0 10px;
+      p {
+        display: block;
+        font-size: 12px;
+        line-height: 15px;
+        color: #666;
+        opacity: .4;
+      }
+      p.on {
         opacity: 1;
-        .lyr-list {
-          transition: transform 0.4s ease-out;
-        }
-        p {
-          display: block;
-          font-size: 12px;
-          line-height: 15px;
-          color: #666;
-          opacity: .4;
-        }
-        p.on {
-          opacity: 1;
-        }
       }
+    }
 
-      .img-box{
+  .img-box{
+    position: relative;
+    margin: 0 auto;
+    height: 4rem;
+    width: 4rem;
+    top: 18px;
+    background-size: cover;
+    .s-tip{
+      display: inline-block;
+      position: absolute;
+      z-index: 10;
+      top: -1.2rem;
+      left: 1.5rem;
+      height: 2rem;
+      width: 1.4rem;
+      background-image: url('../../static/images/s-tip.png');
+      background-size: cover;
+      transform: rotate(-15deg);
+      transition: all .3s linear;
+      -ms-transform-origin: 0 0;
+      -webkit-transform-origin: 0 0;
+      -moz-transform-origin: 0 0;
+      -o-transform-origin: 0 0;
+      &.active{
+        top: -1.2rem;
+        transform: rotate(0deg)
+      }
+    }
+    .img-ct{
+      height: 4rem;
+      width: 4rem;
+      overflow: hidden;
+      border-radius: 100%;
+      background-image: url('../../static/images/s-cicle.png');
+      background-size: cover;
+      animation:cicle 10s infinite;
+      -webkit-animation:cicle 10s linear infinite;
+      -moz-animation:cicle 10s linear infinite;
+      -ms-animation:cicle 10s linear infinite
+      &.active{
+        animation:cicle 10s infinite;
+        -webkit-animation:cicle 10s linear infinite;
+        -moz-animation:cicle 10s linear infinite;
+        -ms-animation:cicle 10s linear infinite
+      }
+      &.poused{
+          animation-play-state: paused;
+          -webkit-animation-play-state: paused;
+          -moz-animation-play-state: paused;
+          -ms-animation-play-state: paused;
+      }
+      img{
         position: relative;
-        margin: 0 auto;
-        height: 300px;
-        width: 300px;
-        top: 18px;
-        background-size: cover;
-        .s-tip{
-          display: inline-block;
-          position: absolute;
-          z-index: 10;
-          top: -63px;
-          left: 140px;
-          height: 140px;
-          width: 100px;
-          background-image: url('../../static/images/s-tip.png');
-          background-size: cover;
-          transform: rotate(-15deg);
-          transition: all .3s linear;
-          -ms-transform-origin: 0 0;
-          -webkit-transform-origin: 0 0;
-          -moz-transform-origin: 0 0;
-          -o-transform-origin: 0 0;
-          &.active{
-            transform: rotate(0deg)
-          }
-        }
-        .img-ct{
-          height: 300px;
-          width: 300px;
-          overflow: hidden;
-          border-radius: 100%;
-          background-image: url('../../static/images/s-cicle.png');
-          background-size: cover;
-          animation:cicle 10s infinite;
-          -webkit-animation:cicle 10s linear infinite;
-          -moz-animation:cicle 10s linear infinite;
-          -ms-animation:cicle 10s linear infinite
-          &.active{
-            animation:cicle 10s infinite;
-            -webkit-animation:cicle 10s linear infinite;
-            -moz-animation:cicle 10s linear infinite;
-            -ms-animation:cicle 10s linear infinite
-          }
-          &.poused{
-              animation-play-state: paused;
-              -webkit-animation-play-state: paused;
-              -moz-animation-play-state: paused;
-              -ms-animation-play-state: paused;
-          }
-          img{
+        top: .75rem;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 150%;
+      }
+    }
+  }
+  @-webkit-keyframes cicle {
+    from {
+      -webkit-transform:rotate(0deg)    
+    }
+    to {
+      -webkit-transform:rotate(360deg)
+    }
+  }
+  @-moz-keyframes cicle {
+    from {
+      -moz-transform:rotate(0deg)
+    }
+    to {
+      -moz-transform:rotate(360deg)
+    }
+  }
+  @-ms-keyframes cicle {
+    from {
+      -ms-transform:rotate(0deg)
+    }
+    to {
+      -ms-transform:rotate(360deg)
+    }
+  }
+  @keyframes cicle {
+    from {
+      transform:rotate(0deg)
+    }
+    to {
+      transform:rotate(360deg)
+    }
+  }
+
+  .audio-operator{
+        position: relative;
+        .time-line{
+          margin: 0 auto;
+          width: 5rem;
+          height: 3px;
+          background-color: @font-color;
+          .go-bar{
             position: relative;
-            top: 49px;
-            width: 200px;
-            height: 200px;
-            border-radius: 150%;
+            height: 3px;
+            background-color: @them-color;
+            &>._icon{
+              transition: all .01s linear;
+              position: absolute;
+              top: -.1rem;
+              right: -.1rem;
+              width: .25rem;
+              height: .25rem;
+              fill: @them-color;
+            }
+          }
+          .current-time,
+          .all-time{
+            display: block;
+            position: absolute;
+            font-size: .2rem;
+            top: -.12rem;
+          }
+          .current-time{
+            left: .5rem;
+          }
+          .all-time{
+            right: .5rem;
           }
         }
-        
-      }
-
-      @-webkit-keyframes cicle {
-        from {
-          -webkit-transform:rotate(0deg)    
-        }
-        to {
-          -webkit-transform:rotate(360deg)
-        }
-      }
-      @-moz-keyframes cicle {
-        from {
-          -moz-transform:rotate(0deg)
-        }
-        to {
-          -moz-transform:rotate(360deg)
-        }
-      }
-      @-ms-keyframes cicle {
-        from {
-          -ms-transform:rotate(0deg)
-        }
-        to {
-          -ms-transform:rotate(360deg)
-        }
-      }
-      @keyframes cicle {
-        from {
-          transform:rotate(0deg)
-        }
-        to {
-          transform:rotate(360deg)
-        }
-      }
-      .audio-operator{
-        position: relative;
-        height: 50px;
-        & ._icon{
+        .controle-info{
+          margin-top: 50px;
+          .audio-play-prev,
+          .audio-play-next{
+            position: relative;
+            display: inline-block;
+            width: .6rem;
+            height: .6rem;
+            border-radius: 100%;
+            background-color: @them-color;
+            line-height: 28px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color .2s linear;
+            color: @white;
+          }
+          .audio-play-prev{
+            left: -70px;
+          }
+          .audio-play-next{
+            left: 70px;
+          }
+          & ._icon{
           position: relative;
           top: .07rem;
           width: .4rem;
@@ -540,5 +622,6 @@
           fill: @white;
           stroke: @white;
         }
+      }   
       }
 </style>

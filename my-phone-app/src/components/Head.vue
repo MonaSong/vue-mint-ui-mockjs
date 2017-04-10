@@ -25,7 +25,7 @@
   .header{
     position: fixed;
     top: 0;
-    height: 60px;
+    height: 63px;
     width: 100%;
     background-color: @them-color;
     color: @white;
