@@ -288,10 +288,10 @@
         // 更新时间
         self.is_play = true
         this.set = setInterval(() => {
-          if (!self.$refs || !self.$refs.music) {
-            clearInterval(self.set)
-            return ''
-          }
+          // if (!self.$refs || !self.$refs.music) {
+          //   clearInterval(self.set)
+          //   return ''
+          // }
           this.updateTime()
           // 更新展示歌词
           this.updateLyr()
@@ -417,7 +417,12 @@
 
         }
       }
+    },
+    beforeRouteLeave (to, from, next) {
+      clearInterval(this.set)
+      next()
     }
+
 }
 </script>
 

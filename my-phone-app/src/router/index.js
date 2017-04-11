@@ -23,7 +23,18 @@ export default new Router({
         },
         {
           path: 'center',
-          component: resolve => require(['../pages/center.vue'], resolve)
+          meta: {
+            title: '音乐中心'
+          },
+          component: resolve => require(['../pages/center.vue'], resolve), // beforeRouteLeave
+          beforeRouteLeave: (to, from, next) => {
+            // next(vm => {
+            //   // 通过 `vm` 访问组件实例
+            //   clearInterval(vm.set)
+            // })
+            // // console.log(1)
+            console.log('你好！')
+          }
         },
         {
           path: 'money',
