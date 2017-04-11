@@ -289,6 +289,7 @@
         self.is_play = true
         this.set = setInterval(() => {
           if (!self.$refs || !self.$refs.music) {
+            clearInterval(self.set)
             return ''
           }
           this.updateTime()
@@ -336,7 +337,9 @@
         } else {
           self.my_audio_index = 0
         }
-        self.startMusic()
+        this.$nextTick(() => {
+          self.startMusic()
+        })
       },
       // 上一首歌曲
       preveAudio () {
@@ -372,14 +375,27 @@
         this.nowTime = Number(((end / all) * this.allTime).toFixed(3))
         // 拖拽时歌词
         this.updateLyr()
+        console.log(this.nowTime)
       },
       // 结束拖拽
       leave (e) {
+        let self = this
         if (this.oldX !== 0) {
           this.oldX = 0
-          this.$refs.music.currentTime = this.nowTime
-          this.$refs.lineIn.style.transitionDuration = '0.05s'
+          this.$nextTick(() => {
+            this.$refs.music.currentTime = this.nowTime
+            this.$refs.lineIn.style.transitionDuration = '0.05s'
+            console.log('拖拽之后的时间')
+            console.log(this.nowTime)
+            console.log('进入当前时间设置')
+            console.log(this.$refs.music.currentTime)
+          })
         }
+        this.$nextTick(() => {
+          if (self.is_play) {
+            self.start()
+          }
+        })
         window.removeEventListener('mousemove', this.move)
         window.removeEventListener('touchmove', this.move)
         window.removeEventListener('mouseup', this.leave)
@@ -448,6 +464,7 @@
     border-radius: 100%;
     cursor: pointer;
     text-align: center;
+    line-height: 2.1;
     &>._icon{
       width: .2rem;
       height: .2rem;
@@ -614,7 +631,7 @@
             height: .6rem;
             border-radius: 100%;
             background-color: @them-color;
-            line-height: 28px;
+            line-height: 2.1;
             text-align: center;
             cursor: pointer;
             transition: background-color .2s linear;
