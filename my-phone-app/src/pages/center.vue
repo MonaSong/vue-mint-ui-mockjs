@@ -6,7 +6,7 @@
       <audio :src="my_audio_url" controls 
       ref="music"
       @canplay="updateTime()"
-      v-show="false" autoplay></audio>
+      v-show="false"></audio>
       <!--旋转效果-->
       <div class="img-box">
         <span class="s-tip" :class="{active:is_play}"></span>
@@ -78,13 +78,19 @@
     data () {
       return {
         center: 'center',
-        is_play: true,
+        is_play: false,
         lrc: null,
         nowTime: null,
         allTime: null,
         set: null,
         lyrList: [],
         musicList: [
+          {
+            audio_url: '../../static/musics/dwsj/薛之谦 - 动物世界.mp3',
+            lrc_url: '../../static/musics/dwsj/薛之谦 - 动物世界.lrc',
+            audio_img: '../../static/musics/dwsj/dwsj.png',
+            audio_bg_img: '../../static/musics/dwsj/dwsj-blur.png'
+          },
           {
             audio_url: '../../static/musics/zqzm/孙楠,许茹芸 - 真情真美.mp3',
             lrc_url: '../../static/musics/zqzm/孙楠,许茹芸 - 真情真美.lrc',
@@ -129,10 +135,26 @@
       }
     },
     created () {
+      // 添加微信监听
+      let self = this
+      let audio = self.$refs.music
+      document.addEventListener('WeixinJSBridgeReady', function () {
+        audio.play()
+      }, false)
     },
     mounted  () {
       let self = this
-      self.startMusic()
+      // self.startMusic()
+      let audio = self.$refs.music
+      audio.addEventListener('loadeddata', function () {
+        let audioDuration = audio.duration
+        let audioCurrentTime = audio.currentTime
+        self.allTime = audioDuration
+        self.nowTime = audioCurrentTime
+        self.showLyr()
+      }, false)
+      self.nowTime = 0
+      self.getMusicInfo()
     },
     computed: {
       resultTime () {
@@ -337,8 +359,9 @@
         } else {
           self.my_audio_index = 0
         }
+        self.startMusic()
         this.$nextTick(() => {
-          self.startMusic()
+          self.$refs.music.play()
         })
       },
       // 上一首歌曲
@@ -350,6 +373,9 @@
           self.my_audio_index--
         }
         self.startMusic()
+        this.$nextTick(() => {
+          self.$refs.music.play()
+        })
       },
       // 拖拽时间轴
       drap (e) {
@@ -375,31 +401,24 @@
         this.nowTime = Number(((end / all) * this.allTime).toFixed(3))
         // 拖拽时歌词
         this.updateLyr()
+        console.log('当前时间')
         console.log(this.nowTime)
       },
       // 结束拖拽
       leave (e) {
         let self = this
-        if (this.oldX !== 0) {
-          this.oldX = 0
-          this.$nextTick(() => {
-            this.$refs.music.currentTime = this.nowTime
-            this.$refs.lineIn.style.transitionDuration = '0.05s'
-            console.log('拖拽之后的时间')
-            console.log(this.nowTime)
-            console.log('进入当前时间设置')
-            console.log(this.$refs.music.currentTime)
-          })
+        if (self.oldX !== 0) {
+          self.oldX = 0
+          self.$refs.music.currentTime = self.nowTime
+          self.$refs.lineIn.style.transitionDuration = '0.05s'
         }
-        this.$nextTick(() => {
-          if (self.is_play) {
-            self.start()
-          }
-        })
-        window.removeEventListener('mousemove', this.move)
-        window.removeEventListener('touchmove', this.move)
-        window.removeEventListener('mouseup', this.leave)
-        window.removeEventListener('touchend', this.leave)
+        if (self.is_play) {
+          self.start()
+        }
+        window.removeEventListener('mousemove', self.move)
+        window.removeEventListener('touchmove', self.move)
+        window.removeEventListener('mouseup', self.leave)
+        window.removeEventListener('touchend', self.leave)
       }
     },
     directives: {
