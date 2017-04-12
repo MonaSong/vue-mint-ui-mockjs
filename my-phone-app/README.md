@@ -1,6 +1,6 @@
 # my-phone-app
 
-> A Vue.js project
+> A Vue.js project development on es6 , audio , css3 , express-mockjs
 
 ## Build Setup
 
