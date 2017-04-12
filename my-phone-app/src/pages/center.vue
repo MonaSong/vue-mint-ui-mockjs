@@ -56,7 +56,7 @@
             <svg class="_icon">
               <use v-if="is_play" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-playing"></use>         
               <use v-else xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-pause"></use>
-            </svg>      
+            </svg>
           </b>
           <!--后一首歌曲-->
           <span 
@@ -90,12 +90,6 @@
             lrc_url: '../../static/musics/dwsj/薛之谦 - 动物世界.lrc',
             audio_img: '../../static/musics/dwsj/dwsj.png',
             audio_bg_img: '../../static/musics/dwsj/dwsj-blur.png'
-          },
-          {
-            audio_url: '../../static/musics/zqzm/孙楠,许茹芸 - 真情真美.mp3',
-            lrc_url: '../../static/musics/zqzm/孙楠,许茹芸 - 真情真美.lrc',
-            audio_img: '../../static/musics/zqzm/zqzm.png',
-            audio_bg_img: '../../static/musics/zqzm/zqzm-blur.png'
           },
           {
             audio_url: '../../static/musics/tn/罗大佑 - 童年.mp3',
@@ -134,6 +128,19 @@
         nowLine: 0
       }
     },
+    watch: {
+      is_play () {
+        if (this.is_play === true) {
+          this.$refs.music.play()
+          this.start()
+        } else {
+          this.$nextTick(() => {
+            this.$refs.music.pause()
+            this.stop()
+          })
+        }
+      }
+    },
     created () {
       // 添加微信监听
       let self = this
@@ -144,17 +151,16 @@
     },
     mounted  () {
       let self = this
-      // self.startMusic()
-      let audio = self.$refs.music
-      audio.addEventListener('loadeddata', function () {
-        let audioDuration = audio.duration
-        let audioCurrentTime = audio.currentTime
-        self.allTime = audioDuration
-        self.nowTime = audioCurrentTime
-        self.showLyr()
-      }, false)
+      self.my_audio_url = self.musicList[0].audio_url
+      self.my_lrc_url = self.musicList[0].lrc_url
+      self.my_audio_img = self.musicList[0].audio_img
+      self.my_bg_img = self.musicList[0].audio_bg_img
       self.nowTime = 0
-      self.getMusicInfo()
+      self.getLrc(data => {
+        self.lyr = data.data
+        self.updateLyr()
+        self.showLyr()
+      })
     },
     computed: {
       resultTime () {
@@ -170,47 +176,6 @@
       }
     },
     methods: {
-      startMusic () {
-        let self = this
-        let audio = self.$refs.music
-        // 得到播放音乐的时间
-        self.start()
-        audio.addEventListener('loadeddata', function () {
-          let audioDuration = audio.duration
-          let audioCurrentTime = audio.currentTime
-          self.allTime = audioDuration
-          self.nowTime = audioCurrentTime
-          self.showLyr()
-        }, false)
-        self.nowTime = 0
-        self.getMusicInfo()
-      },
-      // 拿到歌词
-      getMusicInfo () {
-        let self = this
-        // 将当前歌词赋值给歌词变量
-        self.cur_music = self.musicList[self.my_audio_index]
-        self.my_audio_url = self.cur_music.audio_url
-        self.my_lrc_url = self.cur_music.lrc_url
-        self.my_audio_img = self.cur_music.audio_img
-        self.my_bg_img = self.cur_music.audio_bg_img
-        // 拿到当前歌词
-        self.getLrc(function (data) {
-          self.lyr = data.data
-          console.log('当前歌词数据')
-          console.log(self.lrc)
-          // 以下是歌词没加载时的默认显示数据
-          // self.lyrList = [
-          //   {
-          //     min: 999,
-          //     sec: 999,
-          //     ms: 999,
-          //     total: 999,
-          //     txt: '歌词正在疯狂加载中...'
-          //   }
-          // ]
-        })
-      },
       // 更新歌词
       updateLyr () {
         if (this.lyrList.length < 1) {
@@ -245,10 +210,7 @@
           var lyrics = self.lyr
           // 切割成数组
           lyrics = lyrics.split('\n')
-          console.log('lyrics')
-          console.log(lyrics)
           var lyrObj = []
-          let timeArr = []
           // 提取时间轴
           lyrics.forEach(function (val, index) {
             if (index > 4) {
@@ -280,8 +242,6 @@
             // 提取时间
             // var time = /[[\d:\d((.|)\d\])]/g.exec(val)
           })
-          console.log('timeArr')
-          console.log(timeArr)
           // 添加一个空的p
           lyrObj.push({min: 999, sec: 999, ms: 999, total: 999, txt: ''})
           this.lyrList = lyrObj
@@ -327,16 +287,10 @@
       // 暂停或启动
       toggelPlay (e) {
         let self = this
-        let audioDom = self.$refs.music
         if (!self.is_play) {
-          audioDom.play()
           self.is_play = true
-          self.start()
-          self.showLyr()
         } else {
           self.is_play = false
-          self.stop()
-          audioDom.pause()
         }
       },
       // 获取歌词的方法
@@ -351,6 +305,22 @@
           console.log(err)
         })
       },
+      playMusic (index) {
+        let self = this
+        self.my_audio_url = self.musicList[index].audio_url
+        self.my_lrc_url = self.musicList[index].lrc_url
+        self.my_audio_img = self.musicList[index].audio_img
+        self.my_bg_img = self.musicList[index].audio_bg_img
+        self.nowTime = 0
+        self.getLrc(data => {
+          self.lyr = data.data
+          self.showLyr()
+        })
+        this.$nextTick(() => {
+          this.is_play = true
+          this.$refs.music.play()
+        })
+      },
       // 下一首歌曲
       nextAudio () {
         let self = this
@@ -359,10 +329,7 @@
         } else {
           self.my_audio_index = 0
         }
-        self.startMusic()
-        this.$nextTick(() => {
-          self.$refs.music.play()
-        })
+        self.playMusic(self.my_audio_index)
       },
       // 上一首歌曲
       preveAudio () {
@@ -372,10 +339,7 @@
         } else {
           self.my_audio_index--
         }
-        self.startMusic()
-        this.$nextTick(() => {
-          self.$refs.music.play()
-        })
+        self.playMusic(self.my_audio_index)
       },
       // 拖拽时间轴
       drap (e) {
@@ -401,8 +365,6 @@
         this.nowTime = Number(((end / all) * this.allTime).toFixed(3))
         // 拖拽时歌词
         this.updateLyr()
-        console.log('当前时间')
-        console.log(this.nowTime)
       },
       // 结束拖拽
       leave (e) {
@@ -444,7 +406,6 @@
         clearInterval(vm.set)
       })
     }
-
 }
 </script>
 
