@@ -29,11 +29,11 @@ export default {
   },
   methods: {
     skip () {
-      // let self = this
-      // setTimeout(() => {
-      //   self.$router.push('/home')
-      //   self.animated_class = false
-      // }, 5000)
+      let self = this
+      setTimeout(() => {
+        self.$router.push('/home')
+        self.animated_class = false
+      }, 5000)
     }
   }
 }
