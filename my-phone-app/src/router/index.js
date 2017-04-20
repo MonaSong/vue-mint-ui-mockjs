@@ -39,7 +39,7 @@ export default new Router({
         {
           path: 'money',
           // component: resolve => require(['../pages/money.vue'], resolve)
-          component: resolve => require(['../pages/music.vue'], resolve)
+          component: resolve => require(['../pages/money.vue'], resolve)
         }
       ]
     },

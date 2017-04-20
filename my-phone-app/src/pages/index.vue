@@ -22,7 +22,7 @@
 export default {
   data () {
     return {
-      index: '首页',
+      index: '这是首页',
       user_list: null
     }
   },

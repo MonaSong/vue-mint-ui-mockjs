@@ -3,13 +3,13 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import MintUI from 'mint-ui'
+// import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import '@/assets/style.less'
 import axios from 'axios'
 import '@/assets/layout.js'
 
-Vue.use(MintUI)
+// Vue.use(MintUI)
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
