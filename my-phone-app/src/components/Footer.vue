@@ -20,7 +20,7 @@
         <svg class="_icon">
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#my-img"></use>
         </svg>
-        <span>我</span>
+        <span>歌曲</span>
         
       </router-link>
       <router-link to="/home/money" tag="li" :class="{active:(onRoutes === 'money')}">
