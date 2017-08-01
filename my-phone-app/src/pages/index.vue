@@ -2,7 +2,7 @@
   <div class="index">
     <div class="user-lsit">
 
-      <div class="user-info" v-for="item in user_list">
+      <div class="user-info" v-for="(item, $index) in user_list" :key="$index">
         <div class="img">
           <img :src="item.img" alt="">
         </div>
