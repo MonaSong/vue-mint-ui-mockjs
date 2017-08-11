@@ -1,8 +1,8 @@
 # 项目介绍
 
-> A Vue.js project development on es6 , audio , css3 , express-mockjs
+> 这是一个音乐播放器的demo
 
-## 运行脚本
+## 项目运行脚本
 
 ``` bash
 # install dependencies
@@ -31,4 +31,4 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 #demo介绍
 ## 技术栈
-`vue`, `vue-router`, `webpack`, `eslint` , `express-mockjs`
+`vue`, `vue-router`, `webpack`, `eslint` , `express-mockjs` , `es6`, `audio` , `css3`
