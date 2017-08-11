@@ -1,8 +1,8 @@
-# my-phone-app
+# 项目介绍
 
 > A Vue.js project development on es6 , audio , css3 , express-mockjs
 
-## Build Setup
+## 运行脚本
 
 ``` bash
 # install dependencies
@@ -31,4 +31,4 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 #demo介绍
 ## 技术栈
-`vue`, `vue-router`, `webpack`, `eslint`
+`vue`, `vue-router`, `webpack`, `eslint` , `express-mockjs`
