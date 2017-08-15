@@ -1,7 +1,7 @@
 <template>
   <div class="hello">   
     <p class="animate-hello" :class="{animated:animated_class,rubberBand:animated_class}"><img src="../../static/images/flower.png"></p>
-    <p :class="{animated:hua_h,bounceInUp:hua_h,'animate-h':hua_h,fade:leave}"><img src="../../static/images/flower-h.png" alt=""></p>
+    <!--<p :class="{animated:hua_h,bounceInUp:hua_h,'animate-h':hua_h,fade:leave}"><img src="../../static/images/flower-h.png" alt=""></p>-->
   </div>
 </template>
 
